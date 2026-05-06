@@ -24,6 +24,7 @@ jobs:
         env:
           GITHUB_PAGES: "true"
       - run: cp dist/index.html dist/404.html
+      - run: touch dist/.nojekyll
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:
