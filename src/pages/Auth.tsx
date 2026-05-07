@@ -53,8 +53,7 @@ const Auth = () => {
     });
     setLoading(false);
     if (error) { toast.error(error.message); return; }
-    toast.success("สมัครสำเร็จ! เข้าสู่ระบบได้เลย");
-    navigate("/dashboard");
+    toast.success("สมัครสำเร็จ! กรุณาตรวจสอบอีเมลเพื่อยืนยันบัญชีก่อนเข้าสู่ระบบ 📧");
   };
 
   const handleGoogle = async () => {
