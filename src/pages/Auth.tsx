@@ -57,7 +57,13 @@ const Auth = () => {
     toast.success("สมัครสำเร็จ! กรุณาตรวจสอบอีเมลเพื่อยืนยันบัญชีก่อนเข้าสู่ระบบ 📧");
   };
 
+  const isGithubPages = typeof window !== "undefined" && window.location.hostname.endsWith("github.io");
+
   const handleGoogle = async () => {
+    if (isGithubPages) {
+      toast.error("Google Sign-In ใช้งานไม่ได้บน GitHub Pages กรุณาใช้อีเมล/รหัสผ่านแทน");
+      return;
+    }
     setLoading(true);
     const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + base + "/dashboard" });
