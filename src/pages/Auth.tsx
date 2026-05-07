@@ -59,7 +59,8 @@ const Auth = () => {
 
   const handleGoogle = async () => {
     setLoading(true);
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/dashboard" });
+    const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + base + "/dashboard" });
     if (result.error) { toast.error("เข้าสู่ระบบ Google ไม่สำเร็จ"); setLoading(false); return; }
     if (result.redirected) return;
     navigate("/dashboard");
