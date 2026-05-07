@@ -44,10 +44,11 @@ const Auth = () => {
       emailSchema.parse(email); passSchema.parse(password);
     } catch (err: any) { toast.error(err.errors?.[0]?.message ?? "ข้อมูลไม่ถูกต้อง"); return; }
     setLoading(true);
+    const base = import.meta.env.BASE_URL.replace(/\/$/, "");
     const { error } = await supabase.auth.signUp({
       email, password,
       options: {
-        emailRedirectTo: window.location.origin + "/dashboard",
+        emailRedirectTo: window.location.origin + base + "/dashboard",
         data: { display_name: name || email.split("@")[0] },
       },
     });
