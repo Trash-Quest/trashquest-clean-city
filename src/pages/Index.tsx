@@ -21,6 +21,7 @@ const Index = () => {
 
       {/* HERO */}
       <section className="relative overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 bg-trash-pattern opacity-70" aria-hidden />
         <div className="absolute -left-24 top-24 h-72 w-72 rounded-full bg-brand-green-soft blur-3xl" aria-hidden />
         <div className="absolute -right-24 bottom-0 h-72 w-72 rounded-full bg-brand-amber-soft blur-3xl" aria-hidden />
         <div className="container relative grid items-center gap-12 py-20 lg:grid-cols-2 lg:py-28">
