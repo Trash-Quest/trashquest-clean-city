@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const AppHeader = () => {
   const { user, signOut } = useAuth();
@@ -44,6 +45,7 @@ export const AppHeader = () => {
         )}
 
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           {user ? (
             <>
               {points !== null && (
