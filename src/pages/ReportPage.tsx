@@ -10,6 +10,7 @@ import { Camera, ImagePlus, MapPin, Trash2, Sparkles, X, Loader2 } from "lucide-
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import trashSketch from "@/assets/trash-sketch.png";
 
 type Pic = { file: File; preview: string };
 
@@ -99,12 +100,37 @@ const ReportPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative min-h-screen overflow-hidden bg-background">
+      {/* ลายขยะลายเส้นตกแต่งพื้นหลัง */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-trash-pattern opacity-40" />
+      <img
+        aria-hidden
+        src={trashSketch}
+        alt=""
+        loading="lazy"
+        className="pointer-events-none absolute -right-16 top-24 hidden w-[420px] opacity-[0.08] dark:opacity-[0.12] md:block"
+      />
+      <img
+        aria-hidden
+        src={trashSketch}
+        alt=""
+        loading="lazy"
+        className="pointer-events-none absolute -left-20 bottom-10 hidden w-[360px] -rotate-12 opacity-[0.07] dark:opacity-[0.1] md:block"
+      />
+
       <AppHeader />
-      <main className="container max-w-2xl py-8">
-        <div className="mb-6">
-          <h1 className="font-display text-3xl font-extrabold">รายงานจุดขยะ</h1>
-          <p className="mt-1 text-ink-soft">ถ่ายรูป {MIN}-{MAX} ใบ + ปักพิกัด → AI ตรวจ → รับแต้ม</p>
+      <main className="container relative max-w-2xl py-8">
+        <div className="mb-6 flex items-start gap-4">
+          <div className="flex-1">
+            <h1 className="font-display text-3xl font-extrabold">รายงานจุดขยะ</h1>
+            <p className="mt-1 text-ink-soft">ถ่ายรูป {MIN}-{MAX} ใบ + ปักพิกัด → AI ตรวจ → รับแต้ม</p>
+          </div>
+          <img
+            src={trashSketch}
+            alt="ภาพประกอบลายเส้นขยะ"
+            loading="lazy"
+            className="h-20 w-20 shrink-0 object-contain opacity-80 md:hidden"
+          />
         </div>
 
         <Card>
