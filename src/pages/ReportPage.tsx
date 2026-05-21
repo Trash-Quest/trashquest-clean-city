@@ -10,11 +10,42 @@ import { Camera, ImagePlus, MapPin, Trash2, Sparkles, X, Loader2 } from "lucide-
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
-import trashSketch from "@/assets/trash-sketch.png";
 
-type Pic = { file: File; preview: string };
+type Pic = { file: File; preview: string; hash?: string };
 
 const MAX = 4; const MIN = 2;
+
+// ── บีบอัดรูปก่อนอัปโหลด ──────────────────────────────────────────
+// แทนที่จะส่งรูป 3-5MB เราลดให้เหลือ ~200-400KB
+// AI ยังวิเคราะห์ได้ปกติ แต่ประหยัด Storage ได้มาก
+const compressImage = (file: File, maxWidth = 1280, quality = 0.75): Promise<File> => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const scale = Math.min(1, maxWidth / img.width);
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob(
+        (blob) => resolve(new File([blob!], file.name, { type: "image/jpeg" })),
+        "image/jpeg",
+        quality
+      );
+    };
+  });
+};
+
+// ── Hash รูปเพื่อกันส่งรูปซ้ำ ───────────────────────────────────────
+// เหมือนลายนิ้วมือของไฟล์ ถ้า hash ตรงกัน = รูปซ้ำ
+const hashFile = async (file: File): Promise<string> => {
+  const buffer = await file.arrayBuffer();
+  const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+};
 
 const ReportPage = () => {
   const { user } = useAuth();
@@ -26,16 +57,29 @@ const ReportPage = () => {
   const [loadingGeo, setLoadingGeo] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  const onFiles = (files: FileList | null) => {
+  const onFiles = async (files: FileList | null) => {
     if (!files) return;
     const arr = Array.from(files).slice(0, MAX - pics.length);
-    const next: Pic[] = arr.filter((f) => f.type.startsWith("image/") && f.size < 10 * 1024 * 1024)
-      .map((f) => ({ file: f, preview: URL.createObjectURL(f) }));
+    const next: Pic[] = [];
+
+    for (const f of arr) {
+      if (!f.type.startsWith("image/") || f.size >= 10 * 1024 * 1024) continue;
+      // เช็ครูปซ้ำด้วย hash ก่อนเพิ่ม
+      const hash = await hashFile(f);
+      if (pics.some((p) => p.hash === hash)) {
+        toast.error("รูปนี้ถูกเพิ่มไปแล้ว");
+        continue;
+      }
+      next.push({ file: f, preview: URL.createObjectURL(f), hash });
+    }
     setPics((prev) => [...prev, ...next].slice(0, MAX));
   };
 
   const removePic = (i: number) => {
-    setPics((prev) => { URL.revokeObjectURL(prev[i].preview); return prev.filter((_, idx) => idx !== i); });
+    setPics((prev) => {
+      URL.revokeObjectURL(prev[i].preview);
+      return prev.filter((_, idx) => idx !== i);
+    });
   };
 
   const getLocation = () => {
@@ -53,8 +97,30 @@ const ReportPage = () => {
     if (pics.length < MIN) { toast.error(`ต้องมีรูปอย่างน้อย ${MIN} รูป`); return; }
     if (!coords) { toast.error("ปักพิกัดก่อนส่ง"); return; }
 
+    // ── Cooldown Check ────────────────────────────────────────────────
+    // ดึงรายงานล่าสุดของ user คนนี้มาเช็ค
+    // ถ้าผ่านมาแล้ว → รอ 30 นาที, ถ้าไม่ผ่าน → รอแค่ 3 นาที
+    const { data: recent } = await supabase
+      .from("reports")
+      .select("created_at, status")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (recent?.created_at) {
+      const diff = Date.now() - new Date(recent.created_at).getTime();
+      const cooldown = recent.status === "approved" ? 30 * 60 * 1000 : 3 * 60 * 1000;
+      if (diff < cooldown) {
+        const remaining = Math.ceil((cooldown - diff) / 60000);
+        toast.error(`รอ ${remaining} นาทีก่อนส่งรายงานใหม่`);
+        return;
+      }
+    }
+
     setSubmitting(true);
     try {
+      // Insert report row
       const { data: report, error: rErr } = await supabase.from("reports").insert({
         user_id: user.id,
         latitude: coords.lat,
@@ -66,12 +132,15 @@ const ReportPage = () => {
       }).select().single();
       if (rErr || !report) throw rErr ?? new Error("create report failed");
 
+      // Upload photos (บีบอัดก่อนทุกครั้ง)
       const photoRows: any[] = [];
       for (let i = 0; i < pics.length; i++) {
-        const ext = pics[i].file.name.split(".").pop()?.toLowerCase() || "jpg";
+        // บีบอัดรูปก่อนอัปโหลด ลดขนาดจาก 3-5MB เหลือ ~300KB
+        const compressed = await compressImage(pics[i].file);
+        const ext = "jpg"; // หลังบีบอัดจะเป็น jpeg เสมอ
         const path = `${user.id}/${report.id}/${i}-${Date.now()}.${ext}`;
-        const { error: upErr } = await supabase.storage.from("trash-photos").upload(path, pics[i].file, {
-          contentType: pics[i].file.type, upsert: false,
+        const { error: upErr } = await supabase.storage.from("trash-photos").upload(path, compressed, {
+          contentType: "image/jpeg", upsert: false,
         });
         if (upErr) throw upErr;
         const { data: { publicUrl } } = supabase.storage.from("trash-photos").getPublicUrl(path);
@@ -80,6 +149,7 @@ const ReportPage = () => {
       const { error: phErr } = await supabase.from("report_photos").insert(photoRows);
       if (phErr) throw phErr;
 
+      // Trigger AI analysis
       toast.loading("AI กำลังวิเคราะห์...", { id: "ai" });
       const { data: ai, error: aiErr } = await supabase.functions.invoke("analyze-trash", { body: { reportId: report.id } });
       toast.dismiss("ai");
@@ -100,37 +170,12 @@ const ReportPage = () => {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-background">
-      {/* ลายขยะลายเส้นตกแต่งพื้นหลัง */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-trash-pattern opacity-40" />
-      <img
-        aria-hidden
-        src={trashSketch}
-        alt=""
-        loading="lazy"
-        className="pointer-events-none absolute -right-16 top-24 hidden w-[420px] opacity-[0.08] dark:opacity-[0.12] md:block"
-      />
-      <img
-        aria-hidden
-        src={trashSketch}
-        alt=""
-        loading="lazy"
-        className="pointer-events-none absolute -left-20 bottom-10 hidden w-[360px] -rotate-12 opacity-[0.07] dark:opacity-[0.1] md:block"
-      />
-
+    <div className="min-h-screen bg-background">
       <AppHeader />
-      <main className="container relative max-w-2xl py-8">
-        <div className="mb-6 flex items-start gap-4">
-          <div className="flex-1">
-            <h1 className="font-display text-3xl font-extrabold">รายงานจุดขยะ</h1>
-            <p className="mt-1 text-ink-soft">ถ่ายรูป {MIN}-{MAX} ใบ + ปักพิกัด → AI ตรวจ → รับแต้ม</p>
-          </div>
-          <img
-            src={trashSketch}
-            alt="ภาพประกอบลายเส้นขยะ"
-            loading="lazy"
-            className="h-20 w-20 shrink-0 object-contain opacity-80 md:hidden"
-          />
+      <main className="container max-w-2xl py-8">
+        <div className="mb-6">
+          <h1 className="font-display text-3xl font-extrabold">รายงานจุดขยะ</h1>
+          <p className="mt-1 text-ink-soft">ถ่ายรูป {MIN}-{MAX} ใบ + ปักพิกัด → AI ตรวจ → รับแต้ม</p>
         </div>
 
         <Card>
@@ -150,12 +195,10 @@ const ReportPage = () => {
               ))}
               {pics.length < MAX && (
                 <div className="flex flex-col gap-2">
-                  {/* ปุ่มถ่ายรูป */}
                   <label className="grid aspect-square cursor-pointer place-items-center rounded-xl border-2 border-dashed border-ink/20 text-ink-soft hover:border-brand-green hover:text-brand-green">
                     <input type="file" accept="image/*" capture="environment" multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
                     <Camera className="h-7 w-7" />
                   </label>
-                  {/* ปุ่มอัปโหลดจาก Gallery */}
                   <label className="grid aspect-square cursor-pointer place-items-center rounded-xl border-2 border-dashed border-ink/20 text-ink-soft hover:border-brand-green hover:text-brand-green">
                     <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
                     <ImagePlus className="h-7 w-7" />
@@ -177,11 +220,7 @@ const ReportPage = () => {
                 {loadingGeo ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />}
                 {coords ? "อัปเดตตำแหน่ง" : "ใช้ตำแหน่งปัจจุบัน"}
               </Button>
-              {coords && (
-                <span className="text-xs text-ink-soft">
-                  {coords.lat.toFixed(5)}, {coords.lng.toFixed(5)}
-                </span>
-              )}
+              {coords && <span className="text-xs text-ink-soft">{coords.lat.toFixed(5)}, {coords.lng.toFixed(5)}</span>}
             </div>
             <div>
               <Label>ที่อยู่ / สถานที่ (ไม่บังคับ)</Label>
