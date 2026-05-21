@@ -172,16 +172,18 @@ const Index = () => {
                     ))}
                   </ul>
                 </div>
-                <div className="relative">
+                <div className="relative mx-auto w-full max-w-lg">
                   <div className="absolute inset-4 -z-0 rounded-[2.5rem] bg-secondary/60" aria-hidden />
-                  <img
-                    src={s.img}
-                    alt={s.title}
-                    width={900}
-                    height={700}
-                    loading="lazy"
-                    className="relative z-10 mx-auto w-full max-w-lg"
-                  />
+                  <div className="relative z-10 rounded-[2.5rem] border-2 border-ink/15 bg-background/40 p-4 shadow-sm dark:border-foreground/25 dark:bg-foreground/[0.04]">
+                    <img
+                      src={s.img}
+                      alt={s.title}
+                      width={900}
+                      height={700}
+                      loading="lazy"
+                      className="mx-auto w-full rounded-[1.75rem]"
+                    />
+                  </div>
                 </div>
               </div>
             ))}
