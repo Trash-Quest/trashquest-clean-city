@@ -52,6 +52,13 @@ const Index = () => {
                   <Trophy /> ดูอันดับ
                 </Button>
               </Link>
+              <Button
+                variant="ghostInk"
+                size="xl"
+                onClick={() => toast("กำลังอยู่ในช่วงพัฒนา😊", { description: "ระบบ ZONE จะเปิดให้ใช้งานเร็วๆ นี้" })}
+              >
+                <MapIcon /> ZONE
+              </Button>
             </div>
             <div className="mt-10 flex items-center gap-6 text-sm text-ink-soft">
               <div className="flex -space-x-2">
