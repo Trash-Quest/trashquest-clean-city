@@ -181,6 +181,15 @@ const ReportPage = () => {
       const { error: phErr } = await supabase.from("report_photos").insert(photoRows);
       if (phErr) throw phErr;
 
+      // Upload optional video (เก็บเล็กที่สุด, AI หลังบ้านดึงไปวิเคราะห์ต่อ)
+      if (video) {
+        const vPath = `${user.id}/${report.id}/video-${Date.now()}.${(video.file.name.split(".").pop() || "mp4").toLowerCase()}`;
+        const { error: vErr } = await supabase.storage.from("trash-photos").upload(vPath, video.file, {
+          contentType: video.file.type || "video/mp4", upsert: false,
+        });
+        if (vErr) console.warn("video upload failed:", vErr.message);
+      }
+
       // Trigger AI analysis
       toast.loading("AI กำลังวิเคราะห์...", { id: "ai" });
       const { data: ai, error: aiErr } = await supabase.functions.invoke("analyze-trash", { body: { reportId: report.id } });
