@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { AppHeader } from "@/components/AppHeader";
-import { Camera, ImagePlus, MapPin, Trash2, Sparkles, X, Loader2 } from "lucide-react";
+import { Camera, ImagePlus, MapPin, Trash2, Sparkles, X, Loader2, Video as VideoIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -51,11 +51,43 @@ const ReportPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [pics, setPics] = useState<Pic[]>([]);
+  const [video, setVideo] = useState<{ file: File; preview: string } | null>(null);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [address, setAddress] = useState("");
   const [note, setNote] = useState("");
   const [loadingGeo, setLoadingGeo] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  // ── จำกัด VDO ให้เล็กที่สุด แต่ AI ยังวิเคราะห์ได้ ─────────────────
+  // ยอมรับ ≤ 10 วินาที และ ≤ 8MB เพื่อประหยัด Storage + bandwidth
+  const VIDEO_MAX_BYTES = 8 * 1024 * 1024;
+  const VIDEO_MAX_SECONDS = 10;
+
+  const onVideo = (files: FileList | null) => {
+    if (!files?.[0]) return;
+    const f = files[0];
+    if (!f.type.startsWith("video/")) { toast.error("ต้องเป็นไฟล์วิดีโอ"); return; }
+    if (f.size > VIDEO_MAX_BYTES) { toast.error(`วิดีโอใหญ่เกิน ${VIDEO_MAX_BYTES / 1024 / 1024}MB`); return; }
+    const url = URL.createObjectURL(f);
+    const el = document.createElement("video");
+    el.preload = "metadata";
+    el.onloadedmetadata = () => {
+      if (el.duration > VIDEO_MAX_SECONDS + 0.5) {
+        URL.revokeObjectURL(url);
+        toast.error(`วิดีโอยาวเกิน ${VIDEO_MAX_SECONDS} วินาที`);
+        return;
+      }
+      setVideo({ file: f, preview: url });
+      toast.success("เพิ่มวิดีโอแล้ว 🎬");
+    };
+    el.onerror = () => { URL.revokeObjectURL(url); toast.error("อ่านวิดีโอไม่ได้"); };
+    el.src = url;
+  };
+
+  const removeVideo = () => {
+    if (video) URL.revokeObjectURL(video.preview);
+    setVideo(null);
+  };
 
   const onFiles = async (files: FileList | null) => {
     if (!files) return;
@@ -149,6 +181,15 @@ const ReportPage = () => {
       const { error: phErr } = await supabase.from("report_photos").insert(photoRows);
       if (phErr) throw phErr;
 
+      // Upload optional video (เก็บเล็กที่สุด, AI หลังบ้านดึงไปวิเคราะห์ต่อ)
+      if (video) {
+        const vPath = `${user.id}/${report.id}/video-${Date.now()}.${(video.file.name.split(".").pop() || "mp4").toLowerCase()}`;
+        const { error: vErr } = await supabase.storage.from("trash-photos").upload(vPath, video.file, {
+          contentType: video.file.type || "video/mp4", upsert: false,
+        });
+        if (vErr) console.warn("video upload failed:", vErr.message);
+      }
+
       // Trigger AI analysis
       toast.loading("AI กำลังวิเคราะห์...", { id: "ai" });
       const { data: ai, error: aiErr } = await supabase.functions.invoke("analyze-trash", { body: { reportId: report.id } });
@@ -207,6 +248,29 @@ const ReportPage = () => {
               )}
             </div>
             <p className="mt-2 text-xs text-ink-soft">📷 ถ่ายรูป หรือ 🖼️ อัปโหลดจากแกลเลอรี่ได้เลย</p>
+          </CardContent>
+        </Card>
+
+        <Card className="mt-4">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><VideoIcon className="h-5 w-5 text-brand-green" />วิดีโอ (ไม่บังคับ)</CardTitle>
+            <CardDescription>คลิปสั้น ≤ {VIDEO_MAX_SECONDS} วินาที / ≤ {VIDEO_MAX_BYTES / 1024 / 1024}MB เพื่อให้ AI วิเคราะห์เพิ่มเติม</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {video ? (
+              <div className="relative overflow-hidden rounded-xl border border-ink/10">
+                <video src={video.preview} controls playsInline className="w-full max-h-64 bg-ink/5" />
+                <button onClick={removeVideo} className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-ink/80 text-background hover:bg-ink">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-ink/20 px-4 py-6 text-ink-soft hover:border-brand-green hover:text-brand-green">
+                <input type="file" accept="video/*" capture="environment" className="hidden" onChange={(e) => onVideo(e.target.files)} />
+                <VideoIcon className="h-5 w-5" />
+                <span className="text-sm font-medium">เพิ่มวิดีโอสั้น</span>
+              </label>
+            )}
           </CardContent>
         </Card>
 
