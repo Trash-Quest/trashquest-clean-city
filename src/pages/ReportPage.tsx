@@ -253,6 +253,29 @@ const ReportPage = () => {
 
         <Card className="mt-4">
           <CardHeader>
+            <CardTitle className="flex items-center gap-2"><VideoIcon className="h-5 w-5 text-brand-green" />วิดีโอ (ไม่บังคับ)</CardTitle>
+            <CardDescription>คลิปสั้น ≤ {VIDEO_MAX_SECONDS} วินาที / ≤ {VIDEO_MAX_BYTES / 1024 / 1024}MB เพื่อให้ AI วิเคราะห์เพิ่มเติม</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {video ? (
+              <div className="relative overflow-hidden rounded-xl border border-ink/10">
+                <video src={video.preview} controls playsInline className="w-full max-h-64 bg-ink/5" />
+                <button onClick={removeVideo} className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-ink/80 text-background hover:bg-ink">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-ink/20 px-4 py-6 text-ink-soft hover:border-brand-green hover:text-brand-green">
+                <input type="file" accept="video/*" capture="environment" className="hidden" onChange={(e) => onVideo(e.target.files)} />
+                <VideoIcon className="h-5 w-5" />
+                <span className="text-sm font-medium">เพิ่มวิดีโอสั้น</span>
+              </label>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="mt-4">
+          <CardHeader>
             <CardTitle className="flex items-center gap-2"><MapPin className="h-5 w-5 text-brand-green" />พิกัดและรายละเอียด</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
