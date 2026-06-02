@@ -99,23 +99,28 @@ const Index = () => {
       </section>
 
       {/* IMPACT BANNER */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden bg-background">
         <div className="relative h-[60vh] min-h-[460px] w-full">
           <img
             src={heroImpact}
-            alt="ชุมชนอาสาสมัครร่วมกันเก็บขยะในเมือง"
+            alt="ถังขยะล้นและถุงขยะกองอยู่หน้าบ้านในชุมชน"
             width={1920}
             height={1080}
-            className="absolute inset-0 h-full w-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover opacity-95 dark:opacity-55 dark:saturate-50"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/60 to-ink/30" aria-hidden />
-          <div className="absolute inset-0 bg-gradient-to-r from-ink/70 via-transparent to-transparent" aria-hidden />
+          {/* Dark-mode grayish veil to blend with background */}
+          <div className="absolute inset-0 hidden dark:block bg-background/40" aria-hidden />
+          {/* Center scrim for text legibility */}
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/65 via-ink/25 to-transparent dark:from-background/70 dark:via-background/30" aria-hidden />
+          {/* Edge fades into page background (top & bottom) */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-background to-transparent" aria-hidden />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" aria-hidden />
 
           <div className="container relative z-10 flex h-full flex-col justify-center">
-            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-background/30 bg-background/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.25em] text-background backdrop-blur">
+            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.25em] text-white backdrop-blur">
               <span className="h-1.5 w-1.5 rounded-full bg-brand-amber" /> Our Mission
             </span>
-            <h2 className="mt-6 max-w-4xl font-display text-[clamp(2.75rem,8vw,6.5rem)] font-black uppercase leading-[0.95] tracking-tight text-background">
+            <h2 className="mt-6 max-w-4xl font-display text-[clamp(2.75rem,8vw,6.5rem)] font-black uppercase leading-[0.95] tracking-tight text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)]">
               Transform
               <br />
               <span className="relative inline-block">
@@ -126,12 +131,13 @@ const Index = () => {
               <br />
               <span className="text-brand-green">Impact.</span>
             </h2>
-            <p className="mt-6 max-w-xl text-base text-background/85 sm:text-lg">
+            <p className="mt-6 max-w-xl text-base text-white/90 sm:text-lg">
               ทุกชิ้นที่คุณเก็บ คือก้าวเล็กๆ ที่เปลี่ยนเมือง — รวมพลังคน เทคโนโลยี และเกม ให้กลายเป็นพลังจริง
             </p>
           </div>
         </div>
       </section>
+
 
       {/* PROBLEM */}
       <section id="problem" className="border-y border-ink/10 bg-secondary/40 py-20">
