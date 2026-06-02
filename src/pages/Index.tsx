@@ -109,19 +109,21 @@ const Index = () => {
             className="absolute inset-0 h-full w-full object-cover opacity-95 dark:opacity-55 dark:saturate-50"
           />
           {/* Dark-mode grayish veil to blend with background */}
-          <div className="absolute inset-0 hidden dark:block bg-background/40" aria-hidden />
-          {/* Center scrim for text legibility */}
-          <div className="absolute inset-0 bg-gradient-to-r from-ink/65 via-ink/25 to-transparent dark:from-background/70 dark:via-background/30" aria-hidden />
+          <div className="absolute inset-0 hidden dark:block bg-background/50" aria-hidden />
+          {/* Horizontal scrim for left-aligned text legibility */}
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/55 to-ink/20 dark:from-background/80 dark:via-background/50 dark:to-background/20" aria-hidden />
+          {/* Subtle bottom scrim so descender text stays readable */}
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink/60 to-transparent dark:from-background/60" aria-hidden />
           {/* Edge fades into page background (top & bottom) */}
           <div className="pointer-events-none absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-background to-transparent" aria-hidden />
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-background to-transparent" aria-hidden />
 
 
           <div className="container relative z-10 flex h-full flex-col justify-center">
-            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.25em] text-white backdrop-blur">
+            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/40 bg-black/40 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.25em] text-white backdrop-blur-md">
               <span className="h-1.5 w-1.5 rounded-full bg-brand-amber" /> Our Mission
             </span>
-            <h2 className="mt-6 max-w-4xl font-display text-[clamp(2.75rem,8vw,6.5rem)] font-black uppercase leading-[0.95] tracking-tight text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)]">
+            <h2 className="mt-6 max-w-4xl font-display text-[clamp(2.75rem,8vw,6.5rem)] font-black uppercase leading-[0.95] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.55)]">
               Transform
               <br />
               <span className="relative inline-block">
@@ -130,12 +132,13 @@ const Index = () => {
               </span>{" "}
               Into
               <br />
-              <span className="text-brand-green">Impact.</span>
+              <span className="text-brand-green-soft [text-shadow:0_2px_18px_rgba(0,0,0,0.6)]">Impact.</span>
             </h2>
-            <p className="mt-6 max-w-xl text-base text-white/90 sm:text-lg">
+            <p className="mt-6 max-w-xl text-base font-medium text-white sm:text-lg [text-shadow:0_1px_12px_rgba(0,0,0,0.6)]">
               ทุกชิ้นที่คุณเก็บ คือก้าวเล็กๆ ที่เปลี่ยนเมือง — รวมพลังคน เทคโนโลยี และเกม ให้กลายเป็นพลังจริง
             </p>
           </div>
+
         </div>
       </section>
 
