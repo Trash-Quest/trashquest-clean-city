@@ -11,6 +11,7 @@ import heroPhone from "@/assets/hero-phone.png";
 import solMap from "@/assets/sol-map.png";
 import solGame from "@/assets/sol-game.png";
 import solAi from "@/assets/sol-ai.png";
+import heroImpact from "@/assets/hero-impact.jpg";
 
 const Index = () => {
   const { user } = useAuth();
