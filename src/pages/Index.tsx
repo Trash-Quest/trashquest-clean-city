@@ -113,8 +113,9 @@ const Index = () => {
           {/* Center scrim for text legibility */}
           <div className="absolute inset-0 bg-gradient-to-r from-ink/65 via-ink/25 to-transparent dark:from-background/70 dark:via-background/30" aria-hidden />
           {/* Edge fades into page background (top & bottom) */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-background to-transparent" aria-hidden />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" aria-hidden />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-background to-transparent" aria-hidden />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-background to-transparent" aria-hidden />
+
 
           <div className="container relative z-10 flex h-full flex-col justify-center">
             <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.25em] text-white backdrop-blur">
