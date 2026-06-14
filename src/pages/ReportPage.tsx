@@ -222,7 +222,7 @@ const ReportPage = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2"><Camera className="h-5 w-5 text-brand-green" />รูปขยะ ({pics.length}/{MAX})</CardTitle>
-            <CardDescription>ถ่ายหรืออัปโหลดรูปขยะให้ชัดเจน อย่างน้อย {MIN} ใบ</CardDescription>
+            <CardDescription>ถ่ายรูปขยะสดๆ จากกล้องเท่านั้น อย่างน้อย {MIN} ใบ (เพื่อยืนยันตำแหน่งจริง)</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
@@ -235,21 +235,16 @@ const ReportPage = () => {
                 </div>
               ))}
               {pics.length < MAX && (
-                <div className="flex flex-col gap-2">
-                  <label className="grid aspect-square cursor-pointer place-items-center rounded-xl border-2 border-dashed border-ink/20 text-ink-soft hover:border-brand-green hover:text-brand-green">
-                    <input type="file" accept="image/*" capture="environment" multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
-                    <Camera className="h-7 w-7" />
-                  </label>
-                  <label className="grid aspect-square cursor-pointer place-items-center rounded-xl border-2 border-dashed border-ink/20 text-ink-soft hover:border-brand-green hover:text-brand-green">
-                    <input type="file" accept="image/*" multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
-                    <ImagePlus className="h-7 w-7" />
-                  </label>
-                </div>
+                <label className="grid aspect-square cursor-pointer place-items-center rounded-xl border-2 border-dashed border-ink/20 text-ink-soft hover:border-brand-green hover:text-brand-green">
+                  <input type="file" accept="image/*" capture="environment" multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
+                  <Camera className="h-7 w-7" />
+                </label>
               )}
             </div>
-            <p className="mt-2 text-xs text-ink-soft">📷 ถ่ายรูป หรือ 🖼️ อัปโหลดจากแกลเลอรี่ได้เลย</p>
+            <p className="mt-2 text-xs text-ink-soft">📷 ถ่ายจากกล้องเท่านั้น เพื่อป้องกันการใช้รูปเก่าหรือรูปจากที่อื่น</p>
           </CardContent>
         </Card>
+
 
         <Card className="mt-4">
           <CardHeader>
