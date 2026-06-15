@@ -11,6 +11,7 @@ import Auth from "./pages/Auth.tsx";
 import ReportPage from "./pages/ReportPage.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import Leaderboard from "./pages/Leaderboard.tsx";
+import MapPage from "./pages/MapPage.tsx";
 
 const queryClient = new QueryClient();
 const routerBasename = import.meta.env.BASE_URL === "/" ? undefined : import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
             <Route path="/report" element={<RequireAuth><ReportPage /></RequireAuth>} />
+            <Route path="/map" element={<RequireAuth><MapPage /></RequireAuth>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

@@ -1,5 +1,5 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Leaf, LogOut, Trophy, LayoutDashboard, PlusCircle, LogIn } from "lucide-react";
+import { Leaf, LogOut, Trophy, LayoutDashboard, PlusCircle, LogIn, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
@@ -35,6 +35,9 @@ export const AppHeader = () => {
             <NavLink to="/report" className={linkClass}>
               <span className="inline-flex items-center gap-1.5"><PlusCircle className="h-4 w-4" />รายงาน</span>
             </NavLink>
+            <NavLink to="/map" className={linkClass}>
+              <span className="inline-flex items-center gap-1.5"><MapPin className="h-4 w-4" />แผนที่</span>
+            </NavLink>
             <NavLink to="/dashboard" className={linkClass}>
               <span className="inline-flex items-center gap-1.5"><LayoutDashboard className="h-4 w-4" />ของฉัน</span>
             </NavLink>
@@ -69,6 +72,9 @@ export const AppHeader = () => {
         <nav className="container flex items-center justify-around gap-2 border-t border-ink/5 py-2 md:hidden">
           <NavLink to="/report" className={linkClass}>
             <span className="inline-flex flex-col items-center text-xs"><PlusCircle className="h-5 w-5" />รายงาน</span>
+          </NavLink>
+          <NavLink to="/map" className={linkClass}>
+            <span className="inline-flex flex-col items-center text-xs"><MapPin className="h-5 w-5" />แผนที่</span>
           </NavLink>
           <NavLink to="/dashboard" className={linkClass}>
             <span className="inline-flex flex-col items-center text-xs"><LayoutDashboard className="h-5 w-5" />ของฉัน</span>
