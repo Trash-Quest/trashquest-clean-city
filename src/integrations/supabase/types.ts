@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      duplicate_attempts: {
+        Row: {
+          attempt_count: number
+          created_at: string
+          id: string
+          lat: number
+          lng: number
+          month_key: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attempt_count?: number
+          created_at?: string
+          id?: string
+          lat: number
+          lng: number
+          month_key: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attempt_count?: number
+          created_at?: string
+          id?: string
+          lat?: number
+          lng?: number
+          month_key?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -102,8 +135,10 @@ export type Database = {
           address: string | null
           ai_rejection_reason: string | null
           ai_summary: string | null
+          amphoe: string | null
           created_at: string
           estimated_items: number
+          geocode_source: string | null
           id: string
           latitude: number
           longitude: number
@@ -111,7 +146,9 @@ export type Database = {
           photo_count: number
           points_awarded: number
           primary_trash_type: Database["public"]["Enums"]["trash_type"] | null
+          province: string | null
           status: Database["public"]["Enums"]["report_status"]
+          tambon: string | null
           updated_at: string
           user_id: string
         }
@@ -119,8 +156,10 @@ export type Database = {
           address?: string | null
           ai_rejection_reason?: string | null
           ai_summary?: string | null
+          amphoe?: string | null
           created_at?: string
           estimated_items?: number
+          geocode_source?: string | null
           id?: string
           latitude: number
           longitude: number
@@ -128,7 +167,9 @@ export type Database = {
           photo_count?: number
           points_awarded?: number
           primary_trash_type?: Database["public"]["Enums"]["trash_type"] | null
+          province?: string | null
           status?: Database["public"]["Enums"]["report_status"]
+          tambon?: string | null
           updated_at?: string
           user_id: string
         }
@@ -136,8 +177,10 @@ export type Database = {
           address?: string | null
           ai_rejection_reason?: string | null
           ai_summary?: string | null
+          amphoe?: string | null
           created_at?: string
           estimated_items?: number
+          geocode_source?: string | null
           id?: string
           latitude?: number
           longitude?: number
@@ -145,7 +188,9 @@ export type Database = {
           photo_count?: number
           points_awarded?: number
           primary_trash_type?: Database["public"]["Enums"]["trash_type"] | null
+          province?: string | null
           status?: Database["public"]["Enums"]["report_status"]
+          tambon?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -210,6 +255,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      distance_meters: {
+        Args: { lat1: number; lat2: number; lng1: number; lng2: number }
+        Returns: number
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
