@@ -88,6 +88,26 @@ const ReportPage = () => {
   const [note, setNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  // GPS diagnostic / last failure reason shown to user
+  const [gpsCheck, setGpsCheck] = useState<{ accuracy: number; drift: number | null } | null>(null);
+  const [checkingGps, setCheckingGps] = useState(false);
+  const [lastError, setLastError] = useState<string | null>(null);
+
+  const checkGps = async () => {
+    setCheckingGps(true);
+    try {
+      const c = await getGPS();
+      const drift = coords1 ? haversine(coords1, c) : null;
+      setGpsCheck({ accuracy: c.accuracy, drift });
+    } catch (e: any) {
+      setLastError(e.message ?? "ขอ GPS ไม่สำเร็จ");
+    } finally {
+      setCheckingGps(false);
+    }
+  };
+
+  const fail = (msg: string) => { setLastError(msg); toast.error(msg); };
+
   const VIDEO_MAX_BYTES = 8 * 1024 * 1024;
   const VIDEO_MAX_SECONDS = 10;
 
