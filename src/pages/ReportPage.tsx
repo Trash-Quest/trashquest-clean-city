@@ -88,6 +88,26 @@ const ReportPage = () => {
   const [note, setNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  // GPS diagnostic / last failure reason shown to user
+  const [gpsCheck, setGpsCheck] = useState<{ accuracy: number; drift: number | null } | null>(null);
+  const [checkingGps, setCheckingGps] = useState(false);
+  const [lastError, setLastError] = useState<string | null>(null);
+
+  const checkGps = async () => {
+    setCheckingGps(true);
+    try {
+      const c = await getGPS();
+      const drift = coords1 ? haversine(coords1, c) : null;
+      setGpsCheck({ accuracy: c.accuracy, drift });
+    } catch (e: any) {
+      setLastError(e.message ?? "ขอ GPS ไม่สำเร็จ");
+    } finally {
+      setCheckingGps(false);
+    }
+  };
+
+  const fail = (msg: string) => { setLastError(msg); toast.error(msg); };
+
   const VIDEO_MAX_BYTES = 8 * 1024 * 1024;
   const VIDEO_MAX_SECONDS = 10;
 
@@ -165,23 +185,26 @@ const ReportPage = () => {
 
   const submit = async () => {
     if (!user) { navigate("/auth"); return; }
-    if (!coords1) { toast.error("ยังไม่ได้เริ่มภารกิจ"); return; }
-    if (pics.length < MIN) { toast.error(`ต้องมีรูปอย่างน้อย ${MIN} รูป`); return; }
+    if (!coords1) { fail("ยังไม่ได้เริ่มภารกิจ"); return; }
+    if (pics.length < MIN) { fail(`ต้องมีรูปอย่างน้อย ${MIN} รูป`); return; }
 
     setSubmitting(true);
+    setLastError(null);
     try {
       // ── GPS รอบ 2 ───────────────────────────────────────────────
       toast.loading("กำลังยืนยันตำแหน่งอีกครั้ง...", { id: "gps2" });
       const c2 = await getGPS();
       toast.dismiss("gps2");
 
+      const drift = haversine(coords1, c2);
+      setGpsCheck({ accuracy: c2.accuracy, drift });
+
       if (c2.accuracy > MAX_ACCURACY_M) {
-        toast.error(`สัญญาณ GPS อ่อนเกินไป (±${Math.round(c2.accuracy)}m) ออกที่โล่งแล้วลองใหม่`);
+        fail(`สัญญาณ GPS อ่อนเกินไป (±${Math.round(c2.accuracy)}m, ต้อง ≤${MAX_ACCURACY_M}m) ออกที่โล่งแล้วลองใหม่`);
         return;
       }
-      const drift = haversine(coords1, c2);
       if (drift > MAX_GPS_DRIFT_M) {
-        toast.error(`คุณห่างจากจุดเริ่มภารกิจ ${Math.round(drift)}m เกินกำหนด เริ่มภารกิจใหม่`);
+        fail(`คุณห่างจากจุดเริ่มภารกิจ ${Math.round(drift)}m (เกิน ${MAX_GPS_DRIFT_M}m) เริ่มภารกิจใหม่`);
         return;
       }
 
@@ -197,7 +220,7 @@ const ReportPage = () => {
         (d) => haversine({ lat: d.lat, lng: d.lng }, c2) <= DUP_RADIUS_M
       );
       if (samePoint && samePoint.attempt_count >= MAX_DUP_PER_MONTH) {
-        toast.error(`จุดนี้คุณส่งครบ ${MAX_DUP_PER_MONTH} ครั้งของเดือนนี้แล้ว รอเดือนหน้านะ`);
+        fail(`จุดนี้คุณส่งครบ ${MAX_DUP_PER_MONTH} ครั้งของเดือนนี้แล้ว รอเดือนหน้านะ`);
         return;
       }
 
@@ -333,6 +356,44 @@ const ReportPage = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* GPS diagnostic */}
+            <Card className="mt-4">
+              <CardContent className="flex flex-wrap items-center gap-3 p-4 text-sm">
+                <MapPin className="h-5 w-5 shrink-0 text-brand-green" />
+                <div className="flex-1 min-w-[180px]">
+                  <p className="font-semibold">ความแม่น GPS</p>
+                  {gpsCheck ? (
+                    <p className={`text-xs ${gpsCheck.accuracy <= MAX_ACCURACY_M ? "text-brand-green" : "text-red-500"}`}>
+                      ±{Math.round(gpsCheck.accuracy)}m
+                      {gpsCheck.drift !== null && <> · ห่างจุดเริ่ม {Math.round(gpsCheck.drift)}m</>}
+                      {" "}(ต้อง ≤{MAX_ACCURACY_M}m, drift ≤{MAX_GPS_DRIFT_M}m)
+                    </p>
+                  ) : (
+                    <p className="text-xs text-ink-soft">กดตรวจสอบเพื่อดูคุณภาพสัญญาณก่อนส่ง</p>
+                  )}
+                </div>
+                <Button size="sm" variant="outline" onClick={checkGps} disabled={checkingGps}>
+                  {checkingGps ? <Loader2 className="h-4 w-4 animate-spin" /> : "ตรวจ GPS"}
+                </Button>
+              </CardContent>
+            </Card>
+
+            {lastError && (
+              <Card className="mt-4 border-red-500/40 bg-red-500/5">
+                <CardContent className="flex items-start gap-3 p-4 text-sm">
+                  <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
+                  <div className="flex-1">
+                    <p className="font-semibold text-red-500">ส่งไม่ผ่าน</p>
+                    <p className="text-ink-soft">{lastError}</p>
+                  </div>
+                  <button onClick={() => setLastError(null)} className="text-ink-soft hover:text-ink">
+                    <X className="h-4 w-4" />
+                  </button>
+                </CardContent>
+              </Card>
+            )}
+
 
             <Card className="mt-4">
               <CardHeader>

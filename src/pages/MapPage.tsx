@@ -6,7 +6,10 @@ import { MapPin, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 import "leaflet/dist/leaflet.css";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
 type Pin = {
   id: string;
@@ -111,29 +114,44 @@ const MapPage = () => {
                   <Loader2 className="h-6 w-6 animate-spin text-brand-green" />
                 </div>
               )}
-              <MapContainer center={center ?? [13.7563, 100.5018]} zoom={13} className="h-full w-full">
+              <MapContainer
+                center={center ?? [13.7563, 100.5018]}
+                zoom={13}
+                className="h-full w-full"
+                preferCanvas={true}
+              >
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  updateWhenIdle={true}
+                  keepBuffer={2}
                 />
                 <Recenter center={center} />
-                {pins.map((p) => (
-                  <CircleMarker
-                    key={p.id}
-                    center={[p.latitude, p.longitude]}
-                    radius={9}
-                    pathOptions={{ color: colorFor(p), fillColor: colorFor(p), fillOpacity: 0.7, weight: 2 }}
-                  >
-                    <Popup>
-                      <div className="text-xs">
-                        <p className="font-semibold">{p.tambon ?? "ไม่ระบุตำบล"} · {p.province ?? "—"}</p>
-                        <p>ประเภท: {p.primary_trash_type ?? "—"}</p>
-                        <p>แต้ม: {p.points_awarded ?? 0}</p>
-                        <p className="opacity-70">{new Date(p.created_at).toLocaleString("th-TH")}</p>
-                      </div>
-                    </Popup>
-                  </CircleMarker>
-                ))}
+                <MarkerClusterGroup
+                  chunkedLoading
+                  maxClusterRadius={60}
+                  showCoverageOnHover={false}
+                  spiderfyOnMaxZoom={true}
+                  disableClusteringAtZoom={17}
+                >
+                  {pins.map((p) => (
+                    <CircleMarker
+                      key={p.id}
+                      center={[p.latitude, p.longitude]}
+                      radius={8}
+                      pathOptions={{ color: colorFor(p), fillColor: colorFor(p), fillOpacity: 0.75, weight: 2 }}
+                    >
+                      <Popup>
+                        <div className="text-xs">
+                          <p className="font-semibold">{p.tambon ?? "ไม่ระบุตำบล"} · {p.province ?? "—"}</p>
+                          <p>ประเภท: {p.primary_trash_type ?? "—"}</p>
+                          <p>แต้ม: {p.points_awarded ?? 0}</p>
+                          <p className="opacity-70">{new Date(p.created_at).toLocaleString("th-TH")}</p>
+                        </div>
+                      </Popup>
+                    </CircleMarker>
+                  ))}
+                </MarkerClusterGroup>
               </MapContainer>
             </div>
           </CardContent>
