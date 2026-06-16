@@ -6,7 +6,10 @@ import { MapPin, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 import "leaflet/dist/leaflet.css";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
 type Pin = {
   id: string;
