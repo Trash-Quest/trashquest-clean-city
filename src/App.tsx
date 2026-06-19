@@ -33,6 +33,7 @@ const App = () => (
             <Route path="/map" element={<RequireAuth><MapPage /></RequireAuth>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <FloatingStartMission />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
