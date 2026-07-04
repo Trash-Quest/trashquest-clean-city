@@ -6,6 +6,8 @@ import {
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { AppHeader } from "@/components/AppHeader";
+import { Reveal } from "@/components/Reveal";
+import { CountUp } from "@/components/CountUp";
 import { useAuth } from "@/contexts/AuthContext";
 import heroPhone from "@/assets/hero-phone.png";
 import solMap from "@/assets/sol-map.png";
@@ -24,28 +26,28 @@ const Index = () => {
       {/* HERO */}
       <section className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 bg-trash-pattern opacity-70" aria-hidden />
-        <div className="absolute -left-24 top-24 h-72 w-72 rounded-full bg-brand-green-soft blur-3xl" aria-hidden />
-        <div className="absolute -right-24 bottom-0 h-72 w-72 rounded-full bg-brand-amber-soft blur-3xl" aria-hidden />
+        <div className="animate-blob absolute -left-24 top-24 h-72 w-72 rounded-full bg-brand-green-soft blur-3xl" aria-hidden />
+        <div className="animate-blob absolute -right-24 bottom-0 h-72 w-72 rounded-full bg-brand-amber-soft blur-3xl" style={{ animationDelay: "-4s" }} aria-hidden />
         <div className="container relative grid items-center gap-12 py-20 lg:grid-cols-2 lg:py-28">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-brand-green/20 bg-brand-green-soft px-4 py-1.5 text-sm font-semibold text-brand-green">
+            <span className="animate-fade-in-up inline-flex items-center gap-2 rounded-full border border-brand-green/20 bg-brand-green-soft px-4 py-1.5 text-sm font-semibold text-brand-green">
               <span className="h-2 w-2 rounded-full bg-brand-green" /> Civic Tech for Cleaner Cities
             </span>
-            <h1 className="mt-6 font-display text-5xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl">
+            <h1 className="animate-fade-in-up mt-6 font-display text-5xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl" style={{ animationDelay: "80ms" }}>
               เปลี่ยน<span className="relative inline-block">
                 <span className="relative z-10">ขยะ</span>
                 <span className="absolute inset-x-0 bottom-1 z-0 h-4 bg-brand-amber/60" aria-hidden />
               </span>
               <br />ให้เป็น<span className="text-brand-green">แต้ม</span>
             </h1>
-            <p className="mt-6 max-w-xl text-lg text-ink-soft sm:text-xl">
+            <p className="animate-fade-in-up mt-6 max-w-xl text-lg text-ink-soft sm:text-xl" style={{ animationDelay: "160ms" }}>
               Turn trash into rewards. Clean your city.{" "}
               <span className="font-semibold text-ink">Breathe better air.</span>
             </p>
-            <div className="mt-8 flex flex-wrap gap-4">
+            <div className="animate-fade-in-up mt-8 flex flex-wrap gap-4" style={{ animationDelay: "240ms" }}>
               <Link to={startHref}>
-                <Button variant="hero" size="xl">
-                  เริ่มภารกิจ <ArrowRight />
+                <Button variant="hero" size="xl" className="group">
+                  เริ่มภารกิจ <ArrowRight className="transition-transform duration-300 group-hover:translate-x-1" />
                 </Button>
               </Link>
               <Link to="/leaderboard">
@@ -54,7 +56,7 @@ const Index = () => {
                 </Button>
               </Link>
             </div>
-            <div className="mt-10 flex items-center gap-6 text-sm text-ink-soft">
+            <div className="animate-fade-in-up mt-10 flex items-center gap-6 text-sm text-ink-soft" style={{ animationDelay: "320ms" }}>
               <div className="flex -space-x-2">
                 {[0, 1, 2, 3].map((i) => (
                   <div
@@ -70,20 +72,20 @@ const Index = () => {
             </div>
           </div>
 
-          <div className="relative">
+          <div className="animate-fade-in relative" style={{ animationDelay: "300ms" }}>
             <div className="absolute inset-8 -z-0 rounded-[3rem] bg-brand-green/10" aria-hidden />
             <img
               src={heroPhone}
               alt="แผนที่จุดขยะและคุณภาพอากาศในแอป TrashQuest"
               width={1024}
               height={1024}
-              className="relative z-10 mx-auto w-full max-w-md drop-shadow-2xl"
+              className="animate-float relative z-10 mx-auto w-full max-w-md drop-shadow-2xl"
             />
-            <div className="absolute -left-2 top-12 z-20 hidden rounded-2xl border border-ink/10 bg-background px-4 py-3 shadow-xl sm:block">
+            <div className="animate-float-slow absolute -left-2 top-12 z-20 hidden rounded-2xl border border-ink/10 bg-background px-4 py-3 shadow-xl sm:block">
               <div className="text-xs font-medium text-ink-soft">AQI ใกล้คุณ</div>
               <div className="text-2xl font-extrabold text-brand-green">42 · ดี</div>
             </div>
-            <div className="absolute -right-2 bottom-16 z-20 hidden rounded-2xl border border-ink/10 bg-background px-4 py-3 shadow-xl sm:block">
+            <div className="animate-float-slow absolute -right-2 bottom-16 z-20 hidden rounded-2xl border border-ink/10 bg-background px-4 py-3 shadow-xl sm:block" style={{ animationDelay: "-2.5s" }}>
               <div className="text-xs font-medium text-ink-soft">แต้มวันนี้</div>
               <div className="text-2xl font-extrabold text-brand-amber">+ 320</div>
             </div>
@@ -139,26 +141,25 @@ const Index = () => {
       {/* PROBLEM */}
       <section id="problem" className="border-y border-ink/10 bg-secondary/40 py-20">
         <div className="container">
-          <div className="mx-auto max-w-2xl text-center">
+          <Reveal className="mx-auto max-w-2xl text-center">
             <span className="text-sm font-bold uppercase tracking-widest text-brand-amber">The Problem</span>
             <h2 className="mt-3 font-display text-4xl font-extrabold sm:text-5xl">เมืองของเรากำลังป่วย</h2>
-          </div>
+          </Reveal>
           <div className="mt-14 grid gap-6 md:grid-cols-3">
             {[
               { icon: Trash2, title: "ขยะล้นเมือง", desc: "ส่งกลิ่นเหม็น สะสมตามตรอกซอกซอย ไม่มีใครเก็บ" },
               { icon: Wind, title: "อากาศเสีย", desc: "ฝุ่น PM 2.5 เกินค่ามาตรฐาน ทำลายสุขภาพทุกวัน" },
               { icon: Frown, title: "แอปเดิมๆ น่าเบื่อ", desc: "รายงานแล้วเงียบ ไม่มีแรงจูงใจ ไม่เห็นผล" },
             ].map((card, i) => (
-              <div
-                key={i}
-                className="group rounded-3xl border border-ink/10 bg-background p-8 transition hover:-translate-y-1 hover:border-brand-amber/40 hover:shadow-xl"
-              >
-                <div className="grid h-14 w-14 place-items-center rounded-2xl bg-brand-amber-soft text-brand-amber">
-                  <card.icon className="h-7 w-7" />
+              <Reveal key={i} delay={i * 120}>
+                <div className="group h-full rounded-3xl border border-ink/10 bg-background p-8 transition duration-300 hover:-translate-y-1.5 hover:border-brand-amber/40 hover:shadow-xl">
+                  <div className="grid h-14 w-14 place-items-center rounded-2xl bg-brand-amber-soft text-brand-amber transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6">
+                    <card.icon className="h-7 w-7" />
+                  </div>
+                  <h3 className="mt-6 text-2xl font-bold">{card.title}</h3>
+                  <p className="mt-2 text-ink-soft">{card.desc}</p>
                 </div>
-                <h3 className="mt-6 text-2xl font-bold">{card.title}</h3>
-                <p className="mt-2 text-ink-soft">{card.desc}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -167,12 +168,12 @@ const Index = () => {
       {/* SOLUTION */}
       <section id="solution" className="py-24">
         <div className="container">
-          <div className="mx-auto max-w-2xl text-center">
+          <Reveal className="mx-auto max-w-2xl text-center">
             <span className="text-sm font-bold uppercase tracking-widest text-brand-green">Our Solution</span>
             <h2 className="mt-3 font-display text-4xl font-extrabold sm:text-5xl">
               เกม + แผนที่ + AI = เมืองสะอาด
             </h2>
-          </div>
+          </Reveal>
 
           <div className="mt-16 space-y-24">
             {[
@@ -204,34 +205,35 @@ const Index = () => {
                   i % 2 ? "lg:[&>*:first-child]:order-2" : ""
                 }`}
               >
-                <div>
+                <Reveal variant={i % 2 ? "right" : "left"}>
                   <span className="text-sm font-bold tracking-widest text-brand-amber">{s.tag}</span>
                   <h3 className="mt-3 font-display text-3xl font-extrabold sm:text-4xl">{s.title}</h3>
                   <p className="mt-4 text-lg text-ink-soft">{s.desc}</p>
                   <ul className="mt-6 flex flex-wrap gap-2">
-                    {s.bullets.map((b) => (
+                    {s.bullets.map((b, bi) => (
                       <li
                         key={b}
-                        className="rounded-full bg-brand-green-soft px-4 py-1.5 text-sm font-semibold text-brand-green"
+                        className="rounded-full bg-brand-green-soft px-4 py-1.5 text-sm font-semibold text-brand-green transition-transform duration-200 hover:scale-105"
+                        style={{ transitionDelay: `${bi * 30}ms` }}
                       >
                         {b}
                       </li>
                     ))}
                   </ul>
-                </div>
-                <div className="relative mx-auto w-full max-w-lg">
+                </Reveal>
+                <Reveal variant={i % 2 ? "left" : "right"} delay={120} className="relative mx-auto w-full max-w-lg">
                   <div className="absolute inset-4 -z-0 rounded-[2.5rem] bg-secondary/60" aria-hidden />
-                  <div className="relative z-10 rounded-[2.5rem] border-2 border-ink/15 bg-background/40 p-4 shadow-sm dark:border-foreground/25 dark:bg-foreground/[0.04]">
+                  <div className="group relative z-10 rounded-[2.5rem] border-2 border-ink/15 bg-background/40 p-4 shadow-sm transition-shadow duration-300 hover:shadow-2xl dark:border-foreground/25 dark:bg-foreground/[0.04]">
                     <img
                       src={s.img}
                       alt={s.title}
                       width={900}
                       height={700}
                       loading="lazy"
-                      className="mx-auto w-full rounded-[1.75rem]"
+                      className="mx-auto w-full rounded-[1.75rem] transition-transform duration-500 group-hover:scale-[1.02]"
                     />
                   </div>
-                </div>
+                </Reveal>
               </div>
             ))}
           </div>
@@ -241,10 +243,10 @@ const Index = () => {
       {/* HOW IT WORKS */}
       <section id="how" className="border-y border-ink/10 bg-ink py-24 text-background">
         <div className="container">
-          <div className="mx-auto max-w-2xl text-center">
+          <Reveal className="mx-auto max-w-2xl text-center">
             <span className="text-sm font-bold uppercase tracking-widest text-brand-amber">How it works</span>
             <h2 className="mt-3 font-display text-4xl font-extrabold sm:text-5xl">4 ขั้นตอน เริ่มเก็บแต้ม</h2>
-          </div>
+          </Reveal>
 
           <div className="relative mt-16">
             <div
@@ -257,17 +259,17 @@ const Index = () => {
                 { n: "2", icon: Camera, title: "ถ่าย Before", desc: "ไปยังจุด ถ่ายรูปก่อนเก็บ" },
                 { n: "3", icon: ScanLine, title: "ถ่าย After", desc: "AI ตรวจสอบความสะอาด" },
                 { n: "4", icon: Gift, title: "รับแต้ม", desc: "แลกของรางวัลจากพาร์ตเนอร์" },
-              ].map((s) => (
-                <div key={s.n} className="relative text-center">
-                  <div className="relative mx-auto grid h-[72px] w-[72px] place-items-center rounded-2xl bg-brand-amber text-ink shadow-[0_8px_0_0_hsl(var(--brand-amber)/0.4)]">
-                    <s.icon className="h-7 w-7" />
+              ].map((s, i) => (
+                <Reveal key={s.n} delay={i * 130} variant="scale" className="group relative text-center">
+                  <div className="relative mx-auto grid h-[72px] w-[72px] place-items-center rounded-2xl bg-brand-amber text-ink shadow-[0_8px_0_0_hsl(var(--brand-amber)/0.4)] transition-transform duration-300 group-hover:-translate-y-1">
+                    <s.icon className="h-7 w-7 transition-transform duration-300 group-hover:scale-110" />
                     <span className="absolute -right-2 -top-2 grid h-7 w-7 place-items-center rounded-full bg-brand-green text-xs font-extrabold text-brand-green-foreground">
                       {s.n}
                     </span>
                   </div>
                   <h3 className="mt-6 text-xl font-bold">{s.title}</h3>
                   <p className="mt-2 text-background/70">{s.desc}</p>
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>
@@ -277,32 +279,34 @@ const Index = () => {
       {/* IMPACT */}
       <section id="impact" className="py-24">
         <div className="container">
-          <div className="mx-auto max-w-2xl text-center">
+          <Reveal className="mx-auto max-w-2xl text-center">
             <span className="text-sm font-bold uppercase tracking-widest text-brand-green">Real Impact</span>
             <h2 className="mt-3 font-display text-4xl font-extrabold sm:text-5xl">ตัวเลขที่เปลี่ยนเมือง</h2>
-          </div>
+          </Reveal>
           <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { v: "5,000+", l: "จุดขยะถูกเก็บ" },
-              { v: "120 ตัน", l: "CO₂ ลดลง" },
-              { v: "80,000", l: "ผู้ใช้งาน" },
-              { v: "200+", l: "แบรนด์พาร์ตเนอร์" },
+              { v: 5000, suffix: "+", l: "จุดขยะถูกเก็บ" },
+              { v: 120, suffix: " ตัน", l: "CO₂ ลดลง" },
+              { v: 80000, suffix: "", l: "ผู้ใช้งาน" },
+              { v: 200, suffix: "+", l: "แบรนด์พาร์ตเนอร์" },
             ].map((s, i) => (
-              <div
+              <Reveal
                 key={i}
-                className={`rounded-3xl p-8 text-center ${
+                delay={i * 100}
+                variant="scale"
+                className={`rounded-3xl p-8 text-center transition-transform duration-300 hover:-translate-y-1.5 ${
                   i % 2 ? "bg-brand-amber-soft" : "bg-brand-green-soft"
                 }`}
               >
-                <div
+                <CountUp
+                  value={s.v}
+                  suffix={s.suffix}
                   className={`font-display text-5xl font-extrabold ${
                     i % 2 ? "text-brand-amber" : "text-brand-green"
                   }`}
-                >
-                  {s.v}
-                </div>
+                />
                 <div className="mt-2 font-semibold text-ink">{s.l}</div>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -311,13 +315,13 @@ const Index = () => {
       {/* AUDIENCE */}
       <section className="border-t border-ink/10 bg-secondary/40 py-24">
         <div className="container">
-          <div className="mx-auto max-w-2xl text-center">
+          <Reveal className="mx-auto max-w-2xl text-center">
             <span className="text-sm font-bold uppercase tracking-widest text-brand-amber">For Everyone</span>
             <h2 className="mt-3 font-display text-4xl font-extrabold sm:text-5xl">ใครเหมาะกับ TrashQuest?</h2>
-          </div>
+          </Reveal>
 
           <div className="mt-14 grid gap-6 lg:grid-cols-2">
-            <div className="rounded-3xl border-2 border-brand-green/20 bg-background p-10">
+            <Reveal variant="left" className="rounded-3xl border-2 border-brand-green/20 bg-background p-10 transition-shadow duration-300 hover:shadow-xl">
               <div className="grid h-14 w-14 place-items-center rounded-2xl bg-brand-green text-brand-green-foreground">
                 <Users className="h-7 w-7" />
               </div>
@@ -336,9 +340,9 @@ const Index = () => {
                   </span>
                 ))}
               </div>
-            </div>
+            </Reveal>
 
-            <div className="rounded-3xl border-2 border-brand-amber/30 bg-background p-10">
+            <Reveal variant="right" delay={120} className="rounded-3xl border-2 border-brand-amber/30 bg-background p-10 transition-shadow duration-300 hover:shadow-xl">
               <div className="grid h-14 w-14 place-items-center rounded-2xl bg-brand-amber text-brand-amber-foreground">
                 <Building2 className="h-7 w-7" />
               </div>
@@ -357,15 +361,15 @@ const Index = () => {
                   </span>
                 ))}
               </div>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
       {/* CTA FOOTER */}
       <section className="bg-brand-green py-24 text-brand-green-foreground">
-        <div className="container text-center">
-          <CheckCircle2 className="mx-auto h-12 w-12" />
+        <Reveal variant="scale" className="container text-center">
+          <CheckCircle2 className="mx-auto h-12 w-12 animate-float" />
           <h2 className="mt-6 font-display text-4xl font-extrabold sm:text-6xl">
             พร้อมเริ่มภารกิจแล้วหรือยัง?
           </h2>
@@ -388,7 +392,7 @@ const Index = () => {
               </Button>
             </Link>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       <footer className="border-t border-ink/10 py-10">

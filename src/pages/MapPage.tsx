@@ -86,8 +86,8 @@ const MapPage = () => {
     <div className="min-h-screen bg-background">
       <AppHeader />
       <main className="container max-w-5xl py-8">
-        <div className="mb-6 flex items-center gap-3">
-          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-brand-green text-brand-green-foreground">
+        <div className="animate-fade-in-up mb-6 flex items-center gap-3">
+          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-brand-green text-brand-green-foreground animate-float">
             <MapPin className="h-6 w-6" />
           </span>
           <div>
@@ -106,7 +106,7 @@ const MapPage = () => {
           <Button variant={scope === "province" ? "hero" : "outline"} size="sm" onClick={() => setScope("province")} disabled={!myZone?.province}>ทั้งจังหวัด</Button>
         </div>
 
-        <Card>
+        <Card className="animate-fade-in" style={{ animationDelay: "120ms" }}>
           <CardContent className="p-0">
             <div className="relative h-[60vh] w-full overflow-hidden rounded-xl">
               {loading && (

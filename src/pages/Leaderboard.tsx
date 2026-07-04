@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Trophy, MapPin, Crown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { Reveal } from "@/components/Reveal";
 
 type Row = {
   user_id: string;
@@ -105,8 +106,8 @@ const Leaderboard = () => {
   return (
     <div className="relative min-h-screen bg-background text-foreground">
       <div className="pointer-events-none absolute inset-0 bg-trash-pattern opacity-60" aria-hidden />
-      <div className="pointer-events-none absolute -left-32 top-40 h-80 w-80 rounded-full bg-brand-green/15 blur-3xl" aria-hidden />
-      <div className="pointer-events-none absolute -right-32 top-96 h-80 w-80 rounded-full bg-brand-amber/15 blur-3xl" aria-hidden />
+      <div className="animate-blob pointer-events-none absolute -left-32 top-40 h-80 w-80 rounded-full bg-brand-green/15 blur-3xl" aria-hidden />
+      <div className="animate-blob pointer-events-none absolute -right-32 top-96 h-80 w-80 rounded-full bg-brand-amber/15 blur-3xl" style={{ animationDelay: "-4.5s" }} aria-hidden />
 
       <AppHeader />
 
@@ -121,13 +122,13 @@ const Leaderboard = () => {
           </span>
         </div>
 
-        <h1 className="font-display text-4xl font-extrabold leading-tight sm:text-5xl">
+        <h1 className="animate-fade-in-up font-display text-4xl font-extrabold leading-tight sm:text-5xl">
           นัก<span className="relative inline-block">
             <span className="relative z-10">ล่าขยะ</span>
             <span className="absolute inset-x-0 bottom-1 z-0 h-3 bg-brand-amber/60" aria-hidden />
           </span> ตัวจริง
         </h1>
-        <p className="mt-2 text-sm text-ink-soft">เก็บมาก ได้แต้มมาก ขึ้นอันดับเร็ว</p>
+        <p className="animate-fade-in-up mt-2 text-sm text-ink-soft" style={{ animationDelay: "100ms" }}>เก็บมาก ได้แต้มมาก ขึ้นอันดับเร็ว</p>
 
         {/* Pill tabs */}
         <div className="mt-6 inline-flex rounded-full border border-border bg-background/70 p-1 backdrop-blur">
@@ -163,18 +164,18 @@ const Leaderboard = () => {
                     const realRank = r === top3[0] ? 1 : r === top3[1] ? 2 : 3;
                     const isFirst = realRank === 1;
                     return (
-                      <div key={r.user_id} className="flex w-1/3 flex-col items-center">
-                        {isFirst && <Crown className="mb-1 h-5 w-5 text-brand-amber" />}
+                      <Reveal key={r.user_id} variant="up" delay={idx * 140} className="flex w-1/3 flex-col items-center">
+                        {isFirst && <Crown className="mb-1 h-5 w-5 text-brand-amber animate-float" />}
                         <div className={`grid h-14 w-14 place-items-center rounded-full border-2 ${isFirst ? "border-brand-amber" : "border-brand-green/60"} bg-background font-display text-lg font-extrabold`}>
                           {realRank}
                         </div>
                         <p className="mt-2 line-clamp-1 max-w-full text-center text-sm font-bold">{r.display_name ?? "นักล่าขยะ"}</p>
                         <p className="text-xs text-brand-green font-extrabold">{r.total_points.toLocaleString()} pt</p>
                         <div
-                          className={`mt-2 w-full rounded-t-xl ${podiumColor[idx]}`}
+                          className={`mt-2 w-full origin-bottom rounded-t-xl ${podiumColor[idx]}`}
                           style={{ height: podiumHeights[idx] }}
                         />
-                      </div>
+                      </Reveal>
                     );
                   })}
                 </div>
@@ -187,7 +188,8 @@ const Leaderboard = () => {
                 {rest.map((r, i) => {
                   const rank = i + 4;
                   return (
-                    <Card key={r.user_id} className="border-border/60 bg-card/70 backdrop-blur transition hover:border-brand-green/40">
+                    <Reveal key={r.user_id} delay={Math.min(i, 8) * 60}>
+                    <Card className="border-border/60 bg-card/70 backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-brand-green/40 hover:shadow-md">
                       <CardContent className="flex items-center gap-4 p-3">
                         <span className="grid h-10 w-10 place-items-center rounded-xl bg-secondary font-display font-bold text-ink-soft">
                           {rank}
@@ -202,6 +204,7 @@ const Leaderboard = () => {
                         </div>
                       </CardContent>
                     </Card>
+                    </Reveal>
                   );
                 })}
               </div>

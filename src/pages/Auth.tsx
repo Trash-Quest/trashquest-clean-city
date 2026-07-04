@@ -72,9 +72,9 @@ const Auth = () => {
 
   return (
     <div className="grid min-h-screen place-items-center bg-secondary/40 px-4 py-12">
-      <div className="w-full max-w-md rounded-3xl border border-ink/10 bg-background p-8 shadow-xl">
+      <div className="animate-fade-in-up w-full max-w-md rounded-3xl border border-ink/10 bg-background p-8 shadow-xl">
         <div className="mb-6 flex flex-col items-center text-center">
-          <span className="grid h-14 w-14 place-items-center rounded-2xl bg-brand-green text-brand-green-foreground">
+          <span className="grid h-14 w-14 place-items-center rounded-2xl bg-brand-green text-brand-green-foreground animate-float">
             <Leaf className="h-7 w-7" />
           </span>
           <h1 className="mt-4 font-display text-3xl font-extrabold">TrashQuest</h1>

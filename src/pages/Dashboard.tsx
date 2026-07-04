@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, Clock, MapPin, PlusCircle, Trophy, XCircle, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { Reveal } from "@/components/Reveal";
+import { CountUp } from "@/components/CountUp";
 
 type Profile = { display_name: string; total_points: number; total_reports: number; level: number };
 type Report = {
@@ -47,24 +49,28 @@ const Dashboard = () => {
       <AppHeader />
       <main className="container max-w-4xl py-8">
         <div className="grid gap-4 sm:grid-cols-3">
-          <Card className="sm:col-span-2 bg-gradient-to-br from-brand-green to-brand-green/80 text-brand-green-foreground">
-            <CardContent className="p-6">
-              <p className="text-sm opacity-90">สวัสดี, {profile?.display_name ?? "นักล่าขยะ"}!</p>
-              <p className="mt-2 font-display text-5xl font-extrabold">{profile?.total_points?.toLocaleString() ?? 0}</p>
-              <p className="text-sm opacity-90">แต้มสะสม · Level {profile?.level ?? 1}</p>
-              <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-white/20">
-                <div className="h-full bg-brand-amber" style={{ width: `${Math.min(100, ((profile?.total_points ?? 0) % 500) / 5)}%` }} />
-              </div>
-              <p className="mt-1 text-xs opacity-80">เลเวลถัดไปที่ {nextLevelAt} แต้ม</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="flex h-full flex-col justify-center gap-1 p-6 text-center">
-              <Trophy className="mx-auto h-8 w-8 text-brand-amber" />
-              <p className="font-display text-3xl font-extrabold">{profile?.total_reports ?? 0}</p>
-              <p className="text-sm text-ink-soft">รายงานที่อนุมัติ</p>
-            </CardContent>
-          </Card>
+          <Reveal variant="scale" className="sm:col-span-2">
+            <Card className="h-full bg-gradient-to-br from-brand-green to-brand-green/80 text-brand-green-foreground">
+              <CardContent className="p-6">
+                <p className="text-sm opacity-90">สวัสดี, {profile?.display_name ?? "นักล่าขยะ"}!</p>
+                <CountUp value={profile?.total_points ?? 0} className="mt-2 block font-display text-5xl font-extrabold" />
+                <p className="text-sm opacity-90">แต้มสะสม · Level {profile?.level ?? 1}</p>
+                <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-white/20">
+                  <div className="h-full bg-brand-amber transition-[width] duration-1000 ease-out" style={{ width: `${Math.min(100, ((profile?.total_points ?? 0) % 500) / 5)}%` }} />
+                </div>
+                <p className="mt-1 text-xs opacity-80">เลเวลถัดไปที่ {nextLevelAt} แต้ม</p>
+              </CardContent>
+            </Card>
+          </Reveal>
+          <Reveal variant="scale" delay={120}>
+            <Card className="h-full">
+              <CardContent className="flex h-full flex-col justify-center gap-1 p-6 text-center">
+                <Trophy className="mx-auto h-8 w-8 text-brand-amber" />
+                <CountUp value={profile?.total_reports ?? 0} className="font-display text-3xl font-extrabold" />
+                <p className="text-sm text-ink-soft">รายงานที่อนุมัติ</p>
+              </CardContent>
+            </Card>
+          </Reveal>
         </div>
 
         <div className="mt-6 flex flex-wrap gap-3">
@@ -81,10 +87,11 @@ const Dashboard = () => {
           </CardContent></Card>
         ) : (
           <div className="space-y-3">
-            {reports.map((r) => {
+            {reports.map((r, i) => {
               const b = statusBadge(r.status); const Icon = b.icon;
               return (
-                <Card key={r.id}>
+                <Reveal key={r.id} delay={Math.min(i, 6) * 70}>
+                <Card className="transition duration-300 hover:-translate-y-0.5 hover:border-brand-green/40 hover:shadow-lg">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between gap-3">
                       <div>
@@ -112,6 +119,7 @@ const Dashboard = () => {
                     {r.ai_rejection_reason && <p className="mt-2 text-sm text-red-600">⚠️ {r.ai_rejection_reason}</p>}
                   </CardContent>
                 </Card>
+                </Reveal>
               );
             })}
           </div>

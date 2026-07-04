@@ -314,14 +314,14 @@ const ReportPage = () => {
     <div className="min-h-screen bg-background">
       <AppHeader />
       <main className="container max-w-2xl py-8">
-        <div className="mb-6">
+        <div className="animate-fade-in-up mb-6">
           <h1 className="font-display text-3xl font-extrabold">รายงานจุดขยะ</h1>
           <p className="mt-1 text-ink-soft">เริ่มภารกิจ → ถ่ายรูปสดๆ → AI ตรวจ → ปักหมุดบนแมพ</p>
         </div>
 
         {/* STEP 1: เริ่มภารกิจ */}
         {!missionStarted ? (
-          <Card>
+          <Card className="animate-fade-in-up">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Rocket className="h-5 w-5 text-brand-green" /> เริ่มภารกิจ
@@ -340,7 +340,7 @@ const ReportPage = () => {
         ) : (
           <>
             {/* Zone summary */}
-            <Card className="border-brand-green/30 bg-brand-green/5">
+            <Card className="animate-fade-in-up border-brand-green/30 bg-brand-green/5">
               <CardContent className="flex items-start gap-3 p-4">
                 <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-brand-green" />
                 <div className="flex-1 text-sm">
