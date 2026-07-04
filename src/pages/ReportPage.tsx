@@ -293,12 +293,20 @@ const ReportPage = () => {
 
       // ── AI ──────────────────────────────────────────────────────
       toast.loading("AI กำลังวิเคราะห์...", { id: "ai" });
-      const { data: ai, error: aiErr } = await supabase.functions.invoke("analyze-trash", {
+      const { data: ai, error: aiErr } = await supabase.functions.invoke("analyze-trash-roboflow", {
         body: { reportId: report.id },
       });
       toast.dismiss("ai");
-      if (aiErr) toast.error("AI วิเคราะห์ไม่สำเร็จ: " + aiErr.message);
-      else if (ai?.status === "approved") toast.success(`✅ อนุมัติ! ได้รับ ${ai.points_awarded} แต้ม`);
+      if (aiErr) {
+        // FunctionsHttpError ซ่อน body ไว้ใน context — ดึงข้อความจริงจากฟังก์ชันมาแสดง
+        let detail = aiErr.message;
+        try {
+          const body = await (aiErr as any).context?.json?.();
+          if (body?.error) detail = body.error;
+        } catch { /* คง message เดิม */ }
+        toast.error("AI วิเคราะห์ไม่สำเร็จ: " + detail);
+      }
+      else if (ai?.status === "approved") toast.success(`✅ อนุมัติ! ได้รับ ${ai.points_awarded} แต้ม${ai.trash_type ? ` · ${ai.trash_type}` : ""}`);
       else toast.error(`❌ ไม่ผ่าน: ${ai?.rejection_reason ?? "ไม่ใช่รูปขยะที่ตรวจสอบได้"}`);
 
       navigate("/dashboard");

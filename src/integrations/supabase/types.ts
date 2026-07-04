@@ -14,111 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
-      duplicate_attempts: {
-        Row: {
-          attempt_count: number
-          created_at: string
-          id: string
-          lat: number
-          lng: number
-          month_key: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          attempt_count?: number
-          created_at?: string
-          id?: string
-          lat: number
-          lng: number
-          month_key: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          attempt_count?: number
-          created_at?: string
-          id?: string
-          lat?: number
-          lng?: number
-          month_key?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       profiles: {
         Row: {
-          avatar_url: string | null
-          created_at: string
-          display_name: string | null
+          created_at: string | null
           id: string
-          level: number
-          total_points: number
-          total_reports: number
-          updated_at: string
+          level: number | null
+          total_points: number | null
           username: string | null
         }
         Insert: {
-          avatar_url?: string | null
-          created_at?: string
-          display_name?: string | null
+          created_at?: string | null
           id: string
-          level?: number
-          total_points?: number
-          total_reports?: number
-          updated_at?: string
+          level?: number | null
+          total_points?: number | null
           username?: string | null
         }
         Update: {
-          avatar_url?: string | null
-          created_at?: string
-          display_name?: string | null
+          created_at?: string | null
           id?: string
-          level?: number
-          total_points?: number
-          total_reports?: number
-          updated_at?: string
+          level?: number | null
+          total_points?: number | null
           username?: string | null
         }
         Relationships: []
       }
       report_photos: {
         Row: {
-          ai_confidence: number | null
-          ai_description: string | null
-          created_at: string
-          detected_type: Database["public"]["Enums"]["trash_type"] | null
-          display_order: number
+          created_at: string | null
+          display_order: number | null
           id: string
-          is_valid_trash: boolean | null
-          public_url: string
-          report_id: string
-          storage_path: string
+          photo_url: string | null
+          points: number | null
+          public_url: string | null
+          report_id: string | null
+          storage_path: string | null
+          trash_type: string | null
         }
         Insert: {
-          ai_confidence?: number | null
-          ai_description?: string | null
-          created_at?: string
-          detected_type?: Database["public"]["Enums"]["trash_type"] | null
-          display_order?: number
+          created_at?: string | null
+          display_order?: number | null
           id?: string
-          is_valid_trash?: boolean | null
-          public_url: string
-          report_id: string
-          storage_path: string
+          photo_url?: string | null
+          points?: number | null
+          public_url?: string | null
+          report_id?: string | null
+          storage_path?: string | null
+          trash_type?: string | null
         }
         Update: {
-          ai_confidence?: number | null
-          ai_description?: string | null
-          created_at?: string
-          detected_type?: Database["public"]["Enums"]["trash_type"] | null
-          display_order?: number
+          created_at?: string | null
+          display_order?: number | null
           id?: string
-          is_valid_trash?: boolean | null
-          public_url?: string
-          report_id?: string
-          storage_path?: string
+          photo_url?: string | null
+          points?: number | null
+          public_url?: string | null
+          report_id?: string | null
+          storage_path?: string | null
+          trash_type?: string | null
         }
         Relationships: [
           {
@@ -133,120 +85,57 @@ export type Database = {
       reports: {
         Row: {
           address: string | null
-          ai_rejection_reason: string | null
-          ai_summary: string | null
           amphoe: string | null
-          created_at: string
-          estimated_items: number
+          created_at: string | null
+          display_name: string | null
           geocode_source: string | null
           id: string
-          latitude: number
-          longitude: number
+          latitude: number | null
+          longitude: number | null
           note: string | null
           photo_count: number
-          points_awarded: number
-          primary_trash_type: Database["public"]["Enums"]["trash_type"] | null
+          points_awarded: number | null
           province: string | null
-          status: Database["public"]["Enums"]["report_status"]
+          status: string | null
           tambon: string | null
-          updated_at: string
-          user_id: string
+          total_points: number | null
+          user_id: string | null
         }
         Insert: {
           address?: string | null
-          ai_rejection_reason?: string | null
-          ai_summary?: string | null
           amphoe?: string | null
-          created_at?: string
-          estimated_items?: number
+          created_at?: string | null
+          display_name?: string | null
           geocode_source?: string | null
           id?: string
-          latitude: number
-          longitude: number
+          latitude?: number | null
+          longitude?: number | null
           note?: string | null
           photo_count?: number
-          points_awarded?: number
-          primary_trash_type?: Database["public"]["Enums"]["trash_type"] | null
+          points_awarded?: number | null
           province?: string | null
-          status?: Database["public"]["Enums"]["report_status"]
+          status?: string | null
           tambon?: string | null
-          updated_at?: string
-          user_id: string
+          total_points?: number | null
+          user_id?: string | null
         }
         Update: {
           address?: string | null
-          ai_rejection_reason?: string | null
-          ai_summary?: string | null
           amphoe?: string | null
-          created_at?: string
-          estimated_items?: number
+          created_at?: string | null
+          display_name?: string | null
           geocode_source?: string | null
           id?: string
-          latitude?: number
-          longitude?: number
+          latitude?: number | null
+          longitude?: number | null
           note?: string | null
           photo_count?: number
-          points_awarded?: number
-          primary_trash_type?: Database["public"]["Enums"]["trash_type"] | null
+          points_awarded?: number | null
           province?: string | null
-          status?: Database["public"]["Enums"]["report_status"]
+          status?: string | null
           tambon?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      trash_categories: {
-        Row: {
-          created_at: string
-          description: string | null
-          icon: string | null
-          id: string
-          name_en: string
-          name_th: string
-          points_per_item: number
-          type: Database["public"]["Enums"]["trash_type"]
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          icon?: string | null
-          id?: string
-          name_en: string
-          name_th: string
-          points_per_item?: number
-          type: Database["public"]["Enums"]["trash_type"]
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          icon?: string | null
-          id?: string
-          name_en?: string
-          name_th?: string
-          points_per_item?: number
-          type?: Database["public"]["Enums"]["trash_type"]
-        }
-        Relationships: []
-      }
-      user_roles: {
-        Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
+          total_points?: number | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -255,30 +144,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      distance_meters: {
-        Args: { lat1: number; lat2: number; lng1: number; lng2: number }
-        Returns: number
-      }
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
+      increment_user_points: {
+        Args: { pts: number; uid: string }
+        Returns: undefined
       }
     }
     Enums: {
-      app_role: "admin" | "user"
-      report_status: "pending" | "analyzing" | "approved" | "rejected"
-      trash_type:
-        | "plastic"
-        | "paper"
-        | "glass"
-        | "metal"
-        | "organic"
-        | "hazardous"
-        | "electronic"
-        | "general"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -405,19 +277,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      app_role: ["admin", "user"],
-      report_status: ["pending", "analyzing", "approved", "rejected"],
-      trash_type: [
-        "plastic",
-        "paper",
-        "glass",
-        "metal",
-        "organic",
-        "hazardous",
-        "electronic",
-        "general",
-      ],
-    },
+    Enums: {},
   },
 } as const
