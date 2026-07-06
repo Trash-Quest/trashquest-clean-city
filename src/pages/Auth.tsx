@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Leaf } from "lucide-react";
+import logo from "@/assets/logo.png";
 import { supabase } from "@/integrations/supabase/client";
 
 import { toast } from "sonner";
@@ -74,9 +74,7 @@ const Auth = () => {
     <div className="grid min-h-screen place-items-center bg-secondary/40 px-4 py-12">
       <div className="animate-fade-in-up w-full max-w-md rounded-3xl border border-ink/10 bg-background p-8 shadow-xl">
         <div className="mb-6 flex flex-col items-center text-center">
-          <span className="grid h-14 w-14 place-items-center rounded-2xl bg-brand-green text-brand-green-foreground animate-float">
-            <Leaf className="h-7 w-7" />
-          </span>
+          <img src={logo} alt="TrashQuest" className="h-14 w-14 rounded-2xl animate-float" />
           <h1 className="mt-4 font-display text-3xl font-extrabold">TrashQuest</h1>
           <p className="mt-1 text-sm text-ink-soft">เปลี่ยนขยะให้เป็นแต้ม เปลี่ยนเมืองให้สะอาด</p>
         </div>

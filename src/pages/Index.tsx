@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import {
   Trash2, Wind, Frown, MapPin, Trophy, ScanLine, Camera, CheckCircle2,
-  Gift, Users, Building2, Play, Download, Leaf, ArrowRight, Map as MapIcon,
+  Gift, Users, Building2, Play, Download, ArrowRight, Map as MapIcon,
 } from "lucide-react";
+import logo from "@/assets/logo.png";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { AppHeader } from "@/components/AppHeader";
@@ -398,9 +399,7 @@ const Index = () => {
       <footer className="border-t border-ink/10 py-10">
         <div className="container flex flex-col items-center justify-between gap-4 text-sm text-ink-soft sm:flex-row">
           <div className="flex items-center gap-2 font-display font-extrabold text-ink">
-            <span className="grid h-7 w-7 place-items-center rounded-md bg-brand-green text-brand-green-foreground">
-              <Leaf className="h-4 w-4" />
-            </span>
+            <img src={logo} alt="TrashQuest" className="h-7 w-7 rounded-md" />
             TrashQuest
           </div>
           <p>© {new Date().getFullYear()} TrashQuest · Mission for cleaner cities.</p>

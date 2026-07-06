@@ -1,5 +1,6 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Leaf, LogOut, Trophy, LayoutDashboard, PlusCircle, LogIn, MapPin } from "lucide-react";
+import { LogOut, Trophy, LayoutDashboard, PlusCircle, LogIn, MapPin } from "lucide-react";
+import logo from "@/assets/logo.png";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
@@ -24,9 +25,7 @@ export const AppHeader = () => {
     <header className="sticky top-0 z-40 border-b border-ink/10 bg-background/85 backdrop-blur">
       <div className="container flex h-16 items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-2 font-display text-xl font-extrabold">
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-brand-green text-brand-green-foreground">
-            <Leaf className="h-5 w-5" />
-          </span>
+          <img src={logo} alt="TrashQuest" className="h-9 w-9 rounded-lg" />
           TrashQuest
         </Link>
 
