@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { getDeviceHash } from "@/lib/deviceId";
 import { toast } from "sonner";
 
 type Pic = { file: File; preview: string; hash?: string };
@@ -293,8 +294,8 @@ const ReportPage = () => {
 
       // ── AI ──────────────────────────────────────────────────────
       toast.loading("AI กำลังวิเคราะห์...", { id: "ai" });
-      const { data: ai, error: aiErr } = await supabase.functions.invoke("analyze-trash-roboflow", {
-        body: { reportId: report.id },
+      const { data: ai, error: aiErr } = await supabase.functions.invoke("analyze-trash", {
+        body: { reportId: report.id, deviceHash: await getDeviceHash() },
       });
       toast.dismiss("ai");
       if (aiErr) {
@@ -306,7 +307,10 @@ const ReportPage = () => {
         } catch { /* คง message เดิม */ }
         toast.error("AI วิเคราะห์ไม่สำเร็จ: " + detail);
       }
-      else if (ai?.status === "approved") toast.success(`✅ อนุมัติ! ได้รับ ${ai.points_awarded} แต้ม${ai.trash_type ? ` · ${ai.trash_type}` : ""}`);
+      else if (ai?.status === "approved") {
+        toast.success(`✅ อนุมัติ! ได้รับ ${ai.points_awarded} แต้ม${ai.trash_type ? ` · ${ai.trash_type}` : ""}`);
+        if (ai.penalty_note) toast.warning(ai.penalty_note); // รูปคล้ายของสัปดาห์นี้ → แต้มถูกลด
+      }
       else toast.error(`❌ ไม่ผ่าน: ${ai?.rejection_reason ?? "ไม่ใช่รูปขยะที่ตรวจสอบได้"}`);
 
       navigate("/dashboard");
