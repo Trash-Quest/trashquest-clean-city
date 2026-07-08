@@ -23,6 +23,7 @@ const MAX = 4;
 const MIN = 2;
 const DUP_RADIUS_M = 70;            // ภายในรัศมีนี้นับว่าเป็นจุดเดิม
 const MAX_DUP_PER_MONTH = 4;        // ส่งซ้ำจุดเดิมได้ไม่เกิน 4 ครั้ง/เดือน
+const WEEKLY_LIMIT = 20;            // โควตาส่งรายงาน/สัปดาห์ — ต้องตรงกับ WEEKLY_LIMIT ใน analyze-trash (บังคับจริงฝั่ง server)
 const MAX_GPS_DRIFT_M = 200;        // ระยะระหว่าง GPS รอบ 1 กับ รอบ 2
 const MAX_ACCURACY_M = 60;          // accuracy ที่ยอมรับ
 
@@ -479,7 +480,7 @@ const ReportPage = () => {
 
             <div className="mt-4 flex items-start gap-2 rounded-xl border border-brand-amber/30 bg-brand-amber-soft/40 p-3 text-xs text-ink">
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-brand-amber" />
-              <p>ตอนกดส่ง เราจะขอ GPS อีกครั้งเพื่อยืนยันตำแหน่ง · จุดเดิม (รัศมี {DUP_RADIUS_M}m) ส่งได้ {MAX_DUP_PER_MONTH} ครั้ง/เดือน</p>
+              <p>ตอนกดส่ง เราจะขอ GPS อีกครั้งเพื่อยืนยันตำแหน่ง · ส่งได้ {WEEKLY_LIMIT} ครั้ง/สัปดาห์ · รูปซ้ำ/คล้ายของสัปดาห์เดิมจะได้แต้มลดลง</p>
             </div>
 
             <Button onClick={submit} disabled={submitting || pics.length < MIN} variant="hero" size="xl" className="mt-4 w-full">
