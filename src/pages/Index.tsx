@@ -9,8 +9,9 @@ import { toast } from "sonner";
 import { AppHeader } from "@/components/AppHeader";
 import { Reveal } from "@/components/Reveal";
 import { CountUp } from "@/components/CountUp";
+import { HeroMap } from "@/components/HeroMap";
 import { useAuth } from "@/contexts/AuthContext";
-import heroPhone from "@/assets/hero-phone.png";
+import { useHeroStats } from "@/hooks/useHeroStats";
 import solMap from "@/assets/sol-map.png";
 import solGame from "@/assets/sol-game.png";
 import solAi from "@/assets/sol-ai.png";
@@ -19,6 +20,7 @@ import heroImpact from "@/assets/hero-impact.jpg";
 const Index = () => {
   const { user } = useAuth();
   const startHref = user ? "/report" : "/auth";
+  const { pointsToday, reportsToday } = useHeroStats();
   return (
     <div className="min-h-screen bg-background text-ink">
       <AppHeader />
@@ -75,20 +77,16 @@ const Index = () => {
 
           <div className="animate-fade-in relative" style={{ animationDelay: "300ms" }}>
             <div className="absolute inset-8 -z-0 rounded-[3rem] bg-brand-green/10" aria-hidden />
-            <img
-              src={heroPhone}
-              alt="แผนที่จุดขยะและคุณภาพอากาศในแอป TrashQuest"
-              width={1024}
-              height={1024}
-              className="animate-float relative z-10 mx-auto w-full max-w-md drop-shadow-2xl"
-            />
+            <div className="animate-float">
+              <HeroMap />
+            </div>
             <div className="animate-float-slow absolute -left-2 top-12 z-20 hidden rounded-2xl border border-ink/10 bg-background px-4 py-3 shadow-xl sm:block">
-              <div className="text-xs font-medium text-ink-soft">AQI ใกล้คุณ</div>
-              <div className="text-2xl font-extrabold text-brand-green">42 · ดี</div>
+              <div className="text-xs font-medium text-ink-soft">จุดที่เก็บวันนี้</div>
+              <CountUp value={reportsToday} className="text-2xl font-extrabold text-brand-green" />
             </div>
             <div className="animate-float-slow absolute -right-2 bottom-16 z-20 hidden rounded-2xl border border-ink/10 bg-background px-4 py-3 shadow-xl sm:block" style={{ animationDelay: "-2.5s" }}>
               <div className="text-xs font-medium text-ink-soft">แต้มวันนี้</div>
-              <div className="text-2xl font-extrabold text-brand-amber">+ 320</div>
+              <CountUp value={pointsToday} prefix="+ " className="text-2xl font-extrabold text-brand-amber" />
             </div>
           </div>
         </div>
@@ -195,7 +193,7 @@ const Index = () => {
               {
                 tag: "03 · AI Verification",
                 title: "ตรวจสอบรูป Before/After + GPS",
-                desc: "AI ของเราตรวจสอบรูปก่อน-หลังทำความสะอาด ยืนยันด้วย GPS กันโกง 100% โปร่งใส น่าเชื่อถือ",
+                desc: "AI ของเราตรวจสอบรูปก่อน-หลังทำความสะอาด ยืนยันด้วย GPS โปร่งใส น่าเชื่อถือ",
                 bullets: ["Image Diff AI", "GPS Lock", "Anti-Cheat"],
                 img: solAi,
               },
@@ -282,6 +280,7 @@ const Index = () => {
         <div className="container">
           <Reveal className="mx-auto max-w-2xl text-center">
             <span className="text-sm font-bold uppercase tracking-widest text-brand-green">Real Impact</span>
+            <span className="mt-1 block text-sm font-normal text-ink">(ที่คาดหวังไว้)</span>
             <h2 className="mt-3 font-display text-4xl font-extrabold sm:text-5xl">ตัวเลขที่เปลี่ยนเมือง</h2>
           </Reveal>
           <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -374,9 +373,6 @@ const Index = () => {
           <h2 className="mt-6 font-display text-4xl font-extrabold sm:text-6xl">
             พร้อมเริ่มภารกิจแล้วหรือยัง?
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-brand-green-foreground/85">
-            Join 80,000+ people turning their cities cleaner — one piece of trash at a time.
-          </p>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <Link to={startHref}>
               <Button variant="amber" size="xl">
