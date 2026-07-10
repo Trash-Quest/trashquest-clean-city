@@ -193,6 +193,19 @@ const ReportPage = () => {
     setSubmitting(true);
     setLastError(null);
     try {
+      // ── ยืนยันกับ auth server ว่า session ยังใช้ได้จริง ─────────────
+      // token ในเครื่องอาจเป็นของ session ที่ถูก logout ไปแล้ว (เช่น สลับบัญชี) —
+      // insert ผ่าน PostgREST จะยังผ่าน แต่ analyze-trash จะ 401 ทำให้รายงานค้าง "รอตรวจ"
+      const { error: authErr } = await supabase.auth.getUser();
+      if (authErr) {
+        const { error: refreshErr } = await supabase.auth.refreshSession();
+        if (refreshErr) {
+          fail("เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่แล้วส่งอีกครั้ง");
+          navigate("/auth");
+          return;
+        }
+      }
+
       // ── GPS รอบ 2 ───────────────────────────────────────────────
       toast.loading("กำลังยืนยันตำแหน่งอีกครั้ง...", { id: "gps2" });
       const c2 = await getGPS();
@@ -295,9 +308,16 @@ const ReportPage = () => {
 
       // ── AI ──────────────────────────────────────────────────────
       toast.loading("AI กำลังวิเคราะห์...", { id: "ai" });
-      const { data: ai, error: aiErr } = await supabase.functions.invoke("analyze-trash", {
-        body: { reportId: report.id, deviceHash: await getDeviceHash() },
-      });
+      const invokeAnalyze = async () =>
+        supabase.functions.invoke("analyze-trash", {
+          body: { reportId: report.id, deviceHash: await getDeviceHash() },
+        });
+      let { data: ai, error: aiErr } = await invokeAnalyze();
+      if (aiErr && (aiErr as any).context?.status === 401) {
+        // token ที่แนบไปเป็นของ session เก่า — refresh แล้วลองใหม่หนึ่งครั้ง
+        const { error: refreshErr } = await supabase.auth.refreshSession();
+        if (!refreshErr) ({ data: ai, error: aiErr } = await invokeAnalyze());
+      }
       toast.dismiss("ai");
       if (aiErr) {
         // FunctionsHttpError ซ่อน body ไว้ใน context — ดึงข้อความจริงจากฟังก์ชันมาแสดง
@@ -309,7 +329,8 @@ const ReportPage = () => {
         toast.error("AI วิเคราะห์ไม่สำเร็จ: " + detail);
       }
       else if (ai?.status === "approved") {
-        toast.success(`✅ อนุมัติ! ได้รับ ${ai.points_awarded} แต้ม${ai.trash_type ? ` · ${ai.trash_type}` : ""}`);
+        const conf = typeof ai.confidence === "number" ? ` · ตรง ${Math.round(ai.confidence * 100)}%` : "";
+        toast.success(`✅ อนุมัติ! ได้รับ ${ai.points_awarded} แต้ม${ai.trash_type ? ` · ${ai.trash_type}` : ""}${conf}`);
         if (ai.penalty_note) toast.warning(ai.penalty_note); // รูปคล้ายของสัปดาห์นี้ → แต้มถูกลด
       }
       else toast.error(`❌ ไม่ผ่าน: ${ai?.rejection_reason ?? "ไม่ใช่รูปขยะที่ตรวจสอบได้"}`);
